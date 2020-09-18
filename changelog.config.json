@@ -25,7 +25,8 @@
     ],
     "scopes": [
       "",
-      "init"
+      "init",
+      "api"
     ],
     "types": {
       "chore": {
