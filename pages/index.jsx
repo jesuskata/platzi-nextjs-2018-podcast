@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 // Dependencies
 import React from 'react';
 import PropTypes from 'prop-types';
 import 'isomorphic-fetch';
+import Link from 'next/link';
 
 // Utils
 import { uniqueArrayOfObjects } from '../utils';
@@ -14,10 +16,12 @@ const Home = ({ channels }) => {
       <header>Podcast</header>
       <div className="channels">
         {newChannels.map(channel => (
-          <div className="channel" key={channel.id}>
-            <img src={channel.urls.logo_image.original} alt={channel.title} />
-            <h2>{channel.title}</h2>
-          </div>
+          <Link href={`/channel?id=${channel.id}`} key={channel.id}>
+            <a className="channel">
+              <img src={channel.urls.logo_image.original} alt={channel.title} />
+              <h2>{channel.title}</h2>
+            </a>
+          </Link>
         ))}
       </div>
       <style jsx>
