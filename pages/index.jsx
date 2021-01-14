@@ -67,6 +67,19 @@ const Home = ({ channels }) => {
             margin: 0;
             text-align: center;
           }
+
+          a {
+            text-decoration: none;
+          }
+          a:link {
+            color: white;
+          }
+          a:visited {
+            color: #b3b3b3;
+          }
+          a:hover {
+            color: #A2F6A6;
+          }
         `}
       </style>
       <style global jsx>

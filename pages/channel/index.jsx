@@ -1,28 +1,53 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 // Dependencies
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// NextJS
+import Link from 'next/link';
+
 const Channel = ({ channel, audioClips, series }) => (
   <div className="container">
     <header>Podcast</header>
+    <div
+      className="banner"
+      style={{
+        backgroundImage: `url(${channel.urls.banner_image.original})`
+      }}
+    />
     <h1>{channel.title}</h1>
-    <h2>Series</h2>
-    {series.map(serie => (
-      <div key={serie.id}>
-        <p>{serie.title}</p>
+    {series.length > 0 && (
+      <div>
+        <h2>Series</h2>
+        <div className="channels">
+          { series.map((serie) => (
+            <Link href={`/channel?id=${serie.id}`} prefetch>
+              <a className="channel">
+                <img src={serie.urls.logo_image.original} alt="" />
+                <h2>{ serie.title }</h2>
+              </a>
+            </Link>
+          ))}
+        </div>
       </div>
-    ))}
+    )}
     <h2>Últimos Podcasts</h2>
     {audioClips.map(clip => (
-      <div key={clip.id}>
-        <p>{clip.title}</p>
-      </div>
+      <Link href={`/podcast?id=${clip.id}`} prefetch key={clip.id}>
+        <a className="podcast">
+          <h3>{clip.title}</h3>
+          <div className="meta">
+            {Math.ceil(clip.duration / 60)}
+            minutes
+          </div>
+        </a>
+      </Link>
     ))}
     <style jsx>
       {`
         header {
-          color: #333333;
-          background: #A2F6A6;
+          color: #fff;
+          background: #8756ca;
           padding: 15px;
           text-align: center;
           font-weight: 700;
@@ -39,6 +64,15 @@ const Channel = ({ channel, audioClips, series }) => (
           font-weight: 600;
           margin: 0;
           text-align: center;
+          color: white;
+        }
+
+        .banner {
+          width: 100%;
+          padding-bottom: 25%;
+          background-position: 50% 50%;
+          background-size: cover;
+          background-color: #aaa;
         }
 
         .container {
@@ -57,13 +91,16 @@ const Channel = ({ channel, audioClips, series }) => (
           grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
         }
 
-        .channel {
+        a .channel {
           display: block;
           margin-bottom: 0.5em;
+          color: #333;
+          text-decoration: none;
         }
 
         .channel img {
           border-radius: 3px;
+          box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
           width: 100%;
         }
 
@@ -73,6 +110,39 @@ const Channel = ({ channel, audioClips, series }) => (
           font-weight: 600;
           margin: 0;
           text-align: center;
+        }
+
+        .podcast {
+          display: block;
+          text-decoration: none;
+          color: #333;
+          padding: 15px;
+          border-bottom: 1px solid rgba(0,0,0,0.2);
+          cursor: pointer;
+        }
+
+        .podcast:hover {
+          color: #000;
+        }
+
+        .podcast h3 {
+          margin: 0;
+          color: white;
+        }
+
+        .podcast .meta {
+          color: #666;
+          margin-top: 0.5em;
+          font-size: 0.8em;
+        }
+      `}
+    </style>
+    <style jsx global>
+      {`
+        body {
+          margin: 0;
+          font-family: system-ui;
+          background: white;
         }
       `}
     </style>
@@ -87,15 +157,17 @@ Channel.propTypes = {
 
 export async function getServerSideProps({ query }) {
   const idChannel = query.id;
-  const reqChannel = await fetch(`https://api.audioboom.com/channels/${idChannel}`);
+  const [reqChannel, reqAudios, reqSeries] = await Promise.all([
+    fetch(`https://api.audioboom.com/channels/${idChannel}`),
+    fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`),
+    fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`)
+  ]);
   const dataChannel = await reqChannel.json();
   const { channel } = dataChannel.body;
 
-  const reqAudios = await fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`);
   const dataAudios = await reqAudios.json();
   const audioClips = dataAudios.body.audio_clips;
 
-  const reqSeries = await fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`);
   const dataSeries = await reqSeries.json();
   const series = dataSeries.body.channels;
 
