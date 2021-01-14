@@ -13,8 +13,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "isomorphic-fetch": "^2.2.1",
-        "next": "^9.5.3",
+        "isomorphic-fetch": "^3.0.0",
+        "next": "^10.0.5",
         "prop-types": "^15.7.2",
         "react": "^16.13.1",
         "react-dom": "^16.13.1"
