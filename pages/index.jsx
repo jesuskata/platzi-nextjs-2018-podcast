@@ -3,7 +3,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import 'isomorphic-fetch';
-import Link from 'next/link';
+
+// Components
+import { Layout } from '../components/Layout';
+import { ChannelGrid } from '../components/ChannelGrid';
 
 // Utils
 import { uniqueArrayOfObjects } from '../utils';
@@ -12,84 +15,9 @@ const Home = ({ channels }) => {
   const newChannels = uniqueArrayOfObjects(channels);
 
   return (
-    <div className="container">
-      <header>Podcast</header>
-      <div className="channels">
-        {newChannels.map(channel => (
-          <Link href={`/channel?id=${channel.id}`} key={channel.id}>
-            <a className="channel">
-              <img src={channel.urls.logo_image.original} alt={channel.title} />
-              <h2>{channel.title}</h2>
-            </a>
-          </Link>
-        ))}
-      </div>
-      <style jsx>
-        {`
-          header {
-            color: #333333;
-            background: #A2F6A6;
-            padding: 15px;
-            text-align: center;
-            font-weight: 700;
-          }
-
-          .container {
-            background-color: #20313C;
-            color: white;
-            font-family: 'Roboto';
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-          }
-
-          .channels {
-            display: grid;
-            grid-gap: 15px;
-            padding: 15px;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-          }
-
-          .channel {
-            display: block;
-            margin-bottom: 0.5em;
-          }
-
-          .channel img {
-            border-radius: 3px;
-            width: 100%;
-          }
-
-          .channel h2 {
-            padding: 5px;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin: 0;
-            text-align: center;
-          }
-
-          a {
-            text-decoration: none;
-          }
-          a:link {
-            color: white;
-          }
-          a:visited {
-            color: #b3b3b3;
-          }
-          a:hover {
-            color: #A2F6A6;
-          }
-        `}
-      </style>
-      <style global jsx>
-        {`
-          body {
-            margin: 0!important;
-          }
-        `}
-      </style>
-    </div>
+    <Layout title="Podcast">
+      <ChannelGrid channels={newChannels} />
+    </Layout>
   );
 };
 
